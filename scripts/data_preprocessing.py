@@ -3,15 +3,17 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 
+
 # define removing duplicates function
 def remove_duplicates(df):
     '''
     remove duplicate rows from dataset 
     '''
-    df_cleaned = df.drop_duplicates()
+    df_cleaned = df.drop_duplicates().reset_index(drop=True)
     # removed_count = len(df) - len(df_cleaned)
     # print(f"被删除的重复行有{removed_count}行，占比{(removed_count*100)/len(df)}%")
     return df_cleaned
+
 
 # handle missing values
 class HandleMissingValues(BaseEstimator, TransformerMixin):
@@ -23,10 +25,12 @@ class HandleMissingValues(BaseEstimator, TransformerMixin):
     '''
     def fit(self, X, y=None):
         return self
+
     def transform(self, X):
         df_handled = X.fillna(X.median(numeric_only=True, skipna=True))
     
         return df_handled
+
 
 # IQR methods
 class DetectOutliers(BaseEstimator, TransformerMixin):
@@ -61,7 +65,6 @@ class DetectOutliers(BaseEstimator, TransformerMixin):
 
         return self        
 
-    
     def transform(self, X):
         X_target = X.copy()
 
