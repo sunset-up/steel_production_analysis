@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 
@@ -8,6 +9,8 @@ def remove_duplicates(df):
     remove duplicate rows from dataset 
     '''
     df_cleaned = df.drop_duplicates()
+    # removed_count = len(df) - len(df_cleaned)
+    # print(f"被删除的重复行有{removed_count}行，占比{(removed_count*100)/len(df)}%")
     return df_cleaned
 
 # handle missing values
@@ -18,18 +21,12 @@ class HandleMissingValues(BaseEstimator, TransformerMixin):
     :param df: dataframe
     :param fillna: fill missing values with specific value
     '''
-    def __init__(self, replace="mean"):
-        self.fill_with = replace
     def fit(self, X, y=None):
         return self
     def transform(self, X):
-        if self.fill_with=="mean":
-            df_handled = X.fillna(X.mean(numeric_only=True))
-        elif self.fill_with=="median":
-            df_handled = X.fillna(X.median(numeric_only=True))
- 
-        return df_handled
+        df_handled = X.fillna(X.median(numeric_only=True, skipna=True))
     
+        return df_handled
 
 # IQR methods
 class DetectOutliers(BaseEstimator, TransformerMixin):
@@ -38,32 +35,53 @@ class DetectOutliers(BaseEstimator, TransformerMixin):
     :param df: 说明
     :param columns: 说明
     '''
-    def __init__(self, columns, replace="mean"):
-        self.columns = columns
-        self.replace = replace
+    def __init__(self):
+        # store the computation
+        self.stats = {}
 
     def fit(self, X, y=None):
+        # select the numeric columns
+        numeric_col = X.select_dtypes(include=[np.number]).columns.tolist()
+        self.process_col = numeric_col
+        # compute
+        for col in self.process_col:
+            replace_value = X[col].median()
+            Q1 = X[col].quantile(0.25)
+            Q3 = X[col].quantile(0.75)
+            IQR = Q3 - Q1
+            # define the upper and lower bounds
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            # store
+            self.stats[col] = {
+                "lower": lower_bound,
+                "upper": upper_bound,
+                "replace": replace_value
+            }
+
         return self        
+
     
     def transform(self, X):
+        X_target = X.copy()
 
-        Q1 = X[self.columns].quantile(0.25)
-        Q3 = X[self.columns].quantile(0.75)
-        IQR = Q3 - Q1
-        # define the upper and lower bounds
-        lower_bound = Q1 - 1.5 * IQR
-        upper_bound = Q3 + 1.5 * IQR
+        for col in self.process_col:
+            stats = self.stats[col]
+            lower = stats["lower"]
+            upper = stats["upper"]
+            replace_value = stats["replace"]
+    
+            # marking outliers
+            mask = (X_target[col] < lower) | (X_target[col] > upper)
+            # outlier_count = mask.sum()  # count the outliers
 
-        # marking outliers
-        X['isoutliers'] = (X[self.columns] < lower_bound) | (X[self.columns] > upper_bound)
-    # replace outliers
-        if self.replace=="mean":
-            mean_value = X.loc[~X['isoutliers'], self.columns].mean()
-            X.loc[X['isoutliers'], self.columns] = mean_value
-        elif self.replace=="median":
-            median_value=X.loc[~X['isoutliers'], self.columns].median()
-            X.loc[X['isoutliers'], self.columns] = median_value
-        return X
+            # # print the quantity of the replacement
+            # if outlier_count > 0:
+            #     print(f"Column '{col}' has {outlier_count} outliers replaced by {replace_value}.")
+            # replace outliers
+            if mask.any():
+                X_target.loc[mask, col] = replace_value
+        return X_target
         
 # handle the categorical variables
 class EncodeCategoricalVariables(BaseEstimator, TransformerMixin):
@@ -83,15 +101,16 @@ pass
 
 
 # creat data preprocessing pipeline
-def data_preprocessing_pipeline(replace="mean"):
-    pipeline = Pipeline("handle_missing_values", HandleMissingValues(replace),
-                         "detect_outliers", DetectOutliers(replace),
-                         "encode_categorical_variables", EncodeCategoricalVariables,
+def data_preprocessing_pipeline():
+    pipeline = Pipeline(
+        [("handle_missing_values", HandleMissingValues()),
+         ("detect_outliers", DetectOutliers()),
+         ("encode_categorical_variables", EncodeCategoricalVariables()),
 
-    )
+    ])
     return pipeline
 
-def process_data(df, replace="mean"):
+def process_data(df):
     # remove deplicates
     df_cleaned = remove_duplicates(df)
 
