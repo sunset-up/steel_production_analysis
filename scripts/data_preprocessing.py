@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 
 # define removing duplicates function
@@ -76,16 +77,17 @@ class DetectOutliers(BaseEstimator, TransformerMixin):
     
             # marking outliers
             mask = (X_target[col] < lower) | (X_target[col] > upper)
-            # outlier_count = mask.sum()  # count the outliers
+            outlier_count = mask.sum()  # count the outliers
 
-            # # print the quantity of the replacement
-            # if outlier_count > 0:
-            #     print(f"Column '{col}' has {outlier_count} outliers replaced by {replace_value}.")
+            # print the quantity of the replacement
+            if outlier_count > 0:
+                print(f"Column '{col}' has {outlier_count} outliers replaced by {replace_value}.")
             # replace outliers
             if mask.any():
                 X_target.loc[mask, col] = replace_value
         return X_target
-        
+
+
 # handle the categorical variables
 class EncodeCategoricalVariables(BaseEstimator, TransformerMixin):
     """
@@ -105,10 +107,11 @@ pass
 
 # creat data preprocessing pipeline
 def data_preprocessing_pipeline():
-    pipeline = Pipeline(
-        [("handle_missing_values", HandleMissingValues()),
+    pipeline = Pipeline([
+         ("handle_missing_values", HandleMissingValues()),
          ("detect_outliers", DetectOutliers()),
          ("encode_categorical_variables", EncodeCategoricalVariables()),
+        #  ("standscaler", StandardScaler())
 
     ])
     return pipeline
