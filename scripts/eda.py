@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 # plot the matrix correlation heatmap
 def plot_correlation_matrix(corr_matrix):
     plt.figure(figsize=(10, 8))
-    sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", square=True)
+    sns.heatmap(corr_matrix, annot=False, fmt=".2f", cmap="coolwarm", square=True)
     plt.title("Correlation Matrix")
 
 
 # plot feature distributions
 def plot_feature_distributions(X):
-    X.hist(bins=20, figsize=(30, 25), layout=(4, 6))
+    X.hist(bins=20, figsize=(30, 25), layout=(5, 5))
     plt.suptitle("Feature Distributions", fontsize=20)
     # plt.tight_layout()
 
