@@ -54,13 +54,13 @@
    Training set:{'rmse': 0.0556, 'mae': 0.0439, 'r2': 0.648}
    Validation set:{'rmse': 0.079, 'mae': 0.056, 'r2': 0.2226}
 10. C=500
-   degree=3
-   epsilon=0.05
-   gamma=scale
-   kernel=rbf
-   SVR:
-   Training set:{'rmse': 0.0578, 'mae': 0.045, 'r2': 0.6191}
-   Validation set:{'rmse': 0.0768, 'mae': 0.0545, 'r2': 0.2652}
+       degree=3
+       epsilon=0.05
+       gamma=scale
+       kernel=rbf
+       SVR:
+       Training set:{'rmse': 0.0578, 'mae': 0.045, 'r2': 0.6191}
+       Validation set:{'rmse': 0.0768, 'mae': 0.0545, 'r2': 0.2652}
 11. C=300
     degree=3
     epsilon=0.05
@@ -85,3 +85,29 @@
     SVR:
     Training set:{'rmse': 0.0668, 'mae': 0.0488, 'r2': 0.4919}
     Validation set:{'rmse': 0.0712, 'mae': 0.0521, 'r2': 0.3687}
+14. Training time:385.73s
+    C=1000
+    degree=3
+    epsilon=0.05
+    gamma=0.1
+    kernel=rbf
+    SVR:
+    Training set:{'rmse': 0.0684, 'mae': 0.0513, 'r2': 0.4608}
+    Validation set:{'rmse': 0.0707, 'mae': 0.0541, 'r2': 0.3808}
+15. Training time:12.43s
+    C=1.0
+    degree=3
+    epsilon=0.01
+    gamma=scale
+    kernel=rbf
+    SVR:
+    Training set:{'rmse': 0.0703, 'mae': 0.0521, 'r2': 0.4302}
+    Validation set:{'rmse': 0.0701, 'mae': 0.0539, 'r2': 0.3912}
+16. C=1.0
+    degree=3
+    epsilon=0.05
+    gamma=scale
+    kernel=poly
+    SVR:
+    Training set:{'rmse': 0.0715, 'mae': 0.0539, 'r2': 0.4117}
+    Validation set:{'rmse': 0.0715, 'mae': 0.0547, 'r2': 0.3675}
