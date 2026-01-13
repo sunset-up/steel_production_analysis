@@ -188,3 +188,7 @@ def data_preprocessing_pipeline():
          ("standscaler", StandardScaler())
     ])
     return pipeline
+
+
+if __name__ == '__main__':
+    pass

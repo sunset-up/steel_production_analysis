@@ -25,3 +25,6 @@ def load_steel_data(filename):
     print(f'data load successfully:{data.shape[0]} rows and {data.shape[1]} columns')
     print(f'columns:{data.columns.tolist()}')
     return data
+
+if __name__ == '__main__':
+    pass

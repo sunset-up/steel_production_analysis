@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.base import clone
 from sklearn.metrics import root_mean_squared_error, mean_absolute_error, r2_score
+from sklearn.model_selection import KFold
 
 #4.1 performance metrics
 def calculate_metrics(y_true, y_pred):
@@ -22,97 +23,44 @@ def create_performance_table(results):
     results.to_csv("results/comparative_performance.csv", index=False)
 
 
-def evaluate_models_cv(
-    models: dict,
-    X: np.ndarray,
-    y: np.ndarray,
-    n_splits: int = 5,
-    shuffle: bool = True,
-    random_state: int = 42
-):
-    """
-    使用 K 折交叉验证统一评估多个回归模型
-
-    Parameters
-    ----------
-    models : dict
-        {"ModelName": model_instance}
-    X : np.ndarray
-        特征矩阵
-    y : np.ndarray
-        目标变量
-    n_splits : int
-        K 折交叉验证的折数
-    shuffle : bool
-        是否打乱数据
-    random_state : int
-        随机种子
-
-    Returns
-    -------
-    results : dict
-        {
-          "ModelName": {
-              "RMSE": [...],
-              "MAE": [...],
-              "R2": [...],
-              "train_time": [...],
-              "infer_time": [...]
-          }
-        }
-    """
-
-    results = {}
-
-    kf = KFold(
-        n_splits=n_splits,
-        shuffle=shuffle,
-        random_state=random_state
-    )
-
-    for model_name, model in models.items():
-        results[model_name] = {
-            "RMSE": [],
-            "MAE": [],
-            "R2": [],
-            "train_time": [],
-            "infer_time": []
-        }
-
-        for train_idx, test_idx in kf.split(X):
-            X_train, X_test = X[train_idx], X[test_idx]
-            y_train, y_test = y[train_idx], y[test_idx]
-
-            # ---------- 训练 ----------
-            start_train = time.time()
-            model.fit(X_train, y_train)
-            train_time = time.time() - start_train
-
-            # ---------- 推理 ----------
-            start_infer = time.time()
-            y_pred = model.predict(X_test)
-            infer_time = time.time() - start_infer
-
-            # ---------- 指标 ----------
-            rmse = mean_squared_error(y_test, y_pred, squared=False)
-            mae = mean_absolute_error(y_test, y_pred)
-            r2 = r2_score(y_test, y_pred)
-
-            # ---------- 记录 ----------
-            results[model_name]["RMSE"].append(rmse)
-            results[model_name]["MAE"].append(mae)
-            results[model_name]["R2"].append(r2)
-            results[model_name]["train_time"].append(train_time)
-            results[model_name]["infer_time"].append(infer_time)
-
-    return results
-
 # 4.2 visualize
 def plot_model_comparison(results):
     """Create bar plots with error bars"""
-    pass
+    metrics = ['RMSE', 'MAE', 'R2']
+    metric_names = {
+        "RMSE": "RMSE",
+        "MAE": "MAE",
+        "R2": r"$R^2$",
+    }
+    models = list(results.keys())
+    x = np.arange(len(models))
+    fig, ax = plt.subplots(figsize=(10, 8))
+    bar_width = 0.15
+    for i, metric in enumerate(metrics):
+        means = []
+        stds = []
+        for model in models:
+            values = results[model][metric]
+            means.append(np.mean(values))
+            stds.append(np.std(values))
 
-
+        ax.bar(
+            x + i * bar_width,
+            means,
+            width=bar_width,
+            yerr=stds,
+            capsize=4,
+            label=metric_names[metric],
+            alpha=0.85
+        )
+    ax.set_xticks(x + bar_width * (len(metrics) - 1) / 2, models, rotation=30)
+    ax.set_ylabel("Metric Value")
+    ax.set_title("Model Performance Comparison with Error Bars")
+    ax.legend()
+    ax.grid(axis="y", linestyle="--", alpha=0.6)
+    plt.tight_layout()
+            
+            
 def plot_predictions_vs_actual(y_true, y_pred, model_name):
     """Scatter plot of predictions vs actual values"""
     fig, ax = plt.subplots(figsize=(10, 8))
@@ -172,6 +120,10 @@ def plot_learning_curve(X_train, y_train, X_val, y_val, model, curve_type="auto"
         ax.set_ylabel('Loss')
         ax.set_title('Iteration Learning Curve')
         ax.grid(True, linestyle='--')
+
+
+if __name__ == '__main__':
+    pass
 
     
 

@@ -151,3 +151,7 @@ def save_figure(
 
     print(f"{filename} saved to: {save_path}")
 
+
+if __name__ == '__main__':
+    pass
+
