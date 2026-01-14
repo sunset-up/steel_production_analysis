@@ -36,7 +36,10 @@ from results_analysis import plot_learning_curve
 # model training funtions
 ###################################################
 def build_random_forest(**params):
-     return RandomForestRegressor(
+    """  
+    Build a Random Forest regressor with fixed random state and parallel jobs.  
+    """  
+    return RandomForestRegressor(
           random_state=42,
           n_jobs=-1,
           **params
@@ -44,11 +47,17 @@ def build_random_forest(**params):
 
 
 def build_svr(**params):
-     return SVR(**params)
+    """
+    Build a Support Vector Regression (SVR) model.
+    """
+    return SVR(**params)
 
 
 def build_mlp(**params):
-     return MLPRegressor(
+    """
+    Build a Multi-Layer Perceptron (MLP) regressor.
+    """
+    return MLPRegressor(
           max_iter=2000,
           random_state=42,
           **params
@@ -56,7 +65,10 @@ def build_mlp(**params):
 
 
 def build_gpr(**params):
-     return GaussianProcessRegressor(**params)
+    """
+    Build a Gaussian Process Regression (GPR) model.
+    """
+    return GaussianProcessRegressor(**params)
 
 
 def train_with_search(
@@ -72,9 +84,13 @@ def train_with_search(
     scoring="neg_mean_squared_error",
     log_name="Training_log.txt"
 ):
-    
+    """
+    Build a Gaussian Process Regression (GPR) model.
+    """
+    # Initialize base model
     model = model_builder()
 
+    # Select hyperparameter search strategy
     if search_method == "grid":
         searcher = GridSearchCV(
             estimator=model,
@@ -94,14 +110,20 @@ def train_with_search(
             random_state=42,
             n_jobs=-1
         )
-
+    # Fit model with cross-validation
     searcher.fit(X_train, y_train)
+    # Retrieve best model
     best_model = searcher.best_estimator_
+
+     # Predictions on training and validation sets
     y_train_pred = best_model.predict(X_train)
     y_val_pred = best_model.predict(X_val)
+
+    # Compute performance metrics
     train_results = calculate_metrics(y_train, y_train_pred)
     val_results = calculate_metrics(y_val, y_val_pred)
 
+    # Save training log
     base_dir = Path(__file__).resolve().parent.parent
     log_path = base_dir /"results"/"log"/log_name
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -135,16 +157,23 @@ def train_with_search(
 
 
 def print_results(results):
-     print(f"======{type(results['best_model']).__name__}======")
-     print(f"Best Params:{results['best_params']}")
-     print(f"Best Score:{results['best_score']}")
-     print(f"Training Perfomance:{results['train_results']}")
-     print(f"Validation Performance:{results['val_results']}")
+    """
+    Print training and validation performance of a model.
+    """
+    print(f"======{type(results['best_model']).__name__}======")
+    print(f"Best Params:{results['best_params']}")
+    print(f"Best Score:{results['best_score']}")
+    print(f"Training Perfomance:{results['train_results']}")
+    print(f"Validation Performance:{results['val_results']}")
 
 
 # train the final model with (training set + validation set)
 def train_final_model(best_model, X_train, y_train, random_state=42):
+    """
+    Refit the best model on the full training data and record training time.
+    """
     final_model = clone(best_model)
+    # Ensure reproducibility if random_state is supported
     if "random_state" in final_model.get_params():
         final_model.set_params(random_state=random_state)
     start_time = time.perf_counter()
@@ -153,17 +182,25 @@ def train_final_model(best_model, X_train, y_train, random_state=42):
     return final_model, training_time
 
 
+# ===================================================
+# Main workflow
+# ===================================================
 def main():
-    #################################################################
+    """
+    Execute the complete training, evaluation, and model saving pipeline.
+    """
+    # ----------------------------------------------------------
     # 1. Data load
     data_train = load_steel_data("normalized_train_data.csv")
     data_test = load_steel_data("normalized_test_data.csv")
     data = pd.concat([data_train, data_test], axis=0).reset_index(drop=True)
-    #################################################################
+
+    # -----------------------------------------------------------
     # 2. Data split
     # split  data into train / validation / test sets(0.7/0.15/0.15)
     X_train_split, X_val_split, X_test_split, y_train, y_val, y_test=split_set(data)
-    ##################################################################
+
+    # ---------------------------------------------------------------
     # 3.data preprocessing
     pipeline = data_preprocessing_pipeline()
     print("Training set:")
@@ -172,8 +209,9 @@ def main():
     X_val = pipeline.transform(pd.DataFrame(X_val_split))
     print("Test set:")
     X_test = pipeline.transform(pd.DataFrame(X_test_split))
-    #################################################################
-    # 4. model training
+
+    # ------------------------------------------------------------------
+    # 4. Model training with hyperparameter search
     rf_results = train_with_search(
         build_random_forest,
         param_space={
@@ -249,7 +287,8 @@ def main():
     )
     print_results(gpr_results)
 
-
+    # -----------------------------------------------------------------------
+    # 5. Learning curve visualization
     models = {
     "RandomForest": rf_results["best_model"],
     "SVR": svr_results["best_model"],
@@ -263,6 +302,8 @@ def main():
         plot_learning_curve(X_train, y_train, X_val, y_val, model)
         save_figure(f"{name.lower()}_learning_curve.png", "figures/training_performances")
 
+    # --------------------------------------------------------------------------------
+    # 6. Train final models on train + validation sets
     X_train_final = np.vstack((X_train, X_val))
     y_train_final = np.hstack((y_train, y_val))
 
@@ -273,17 +314,20 @@ def main():
         final_models[name] = [final_model, training_time]
         joblib.dump(final_model, f"results/models/{name.lower()}_final.joblib")
 
-    
+    # --------------------------------------------------------------------------------
+    # 7. Final evaluation on test set
     performances_results = {}
     for name, final_model in final_models.items():
         start_time = time.perf_counter()
         y_pred = final_model[0].predict(X_test)
         inference_time = float(f"{(time.perf_counter() - start_time):.4f}")
+        
         performance = calculate_metrics(y_test, y_pred)
         performance["Training Time"] = final_model[1]
         performance["Inference Time"] = inference_time
         performances_results[name] = performance
 
+    # Save test performance table
     base_dir = Path(__file__).resolve().parent.parent
     results_path = base_dir/"results"/"table"/"test_performances.csv"
     results_path.parent.mkdir(parents=True, exist_ok=True)

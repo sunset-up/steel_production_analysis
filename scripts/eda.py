@@ -153,7 +153,7 @@ def save_figure(
 
     print(f"{filename} saved to: {save_path}")
 
-# 3. Data analysis plots
+#  Data analysis plots
 def main():
     # Data load
     data_train = load_steel_data("normalized_train_data.csv")

@@ -191,7 +191,12 @@ def data_preprocessing_pipeline():
     return pipeline
 
 def split_set(data, test_size=0.15, val_size=0.15, seed=42):
+    """
+    Split data into train, validation, and test sets.
 
+    Assumes the target column is named 'output' and returns
+    feature matrices and label vectors for each split.
+    """
     temp_size = test_size + val_size
     temp_split_size = val_size / (temp_size)
     # split to training set and temporary set
@@ -210,6 +215,12 @@ def split_set(data, test_size=0.15, val_size=0.15, seed=42):
 
 
 def process_data(data):
+    """
+    Split data and apply a preprocessing pipeline.
+
+    The pipeline is fitted on the training set and applied
+    to validation and test sets.
+    """
     X_train_split, X_val_split, X_test_split, y_train, y_val, y_test=split_set(data)
 
     pipeline = data_preprocessing_pipeline()

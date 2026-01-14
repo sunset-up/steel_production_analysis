@@ -1,19 +1,21 @@
 import time
 import joblib
-import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.base import clone
 from sklearn.metrics import root_mean_squared_error, mean_absolute_error, r2_score
-from sklearn.model_selection import KFold
 from data_loading import load_steel_data
-from data_preprocessing import split_set
 from data_preprocessing import process_data
 from eda import save_figure
 
-#4.1 performance metrics
+# 4.1 performance metrics
 def calculate_metrics(y_true, y_pred):
+    """
+    Compute regression performance metrics.
+
+    Returns RMSE, MAE and R2 as floats rounded to 4 decimals.
+    """
     rmse = f'{root_mean_squared_error(y_true, y_pred):.4f}'
     mae = f'{mean_absolute_error(y_true, y_pred):.4f}'
     r2 = f'{r2_score(y_true, y_pred):.4f}'
@@ -25,14 +27,14 @@ def calculate_metrics(y_true, y_pred):
     return results
 
 
-def create_performance_table(results):
-    """Create comparative performance table"""  
-    results.to_csv("results/comparative_performance.csv", index=False)
-
-
 # 4.2 visualize
 def plot_model_comparison(results):
-    """Create bar plots with error bars"""
+    """
+    Create bar plots with error bars to compare model performance.
+
+    Each bar represents the mean metric value across repeated runs,
+    with standard deviation shown as error bars.
+    """
     metrics = ['RMSE', 'MAE', 'R2']
     metric_names = {
         "RMSE": "RMSE",
@@ -46,6 +48,8 @@ def plot_model_comparison(results):
     for i, metric in enumerate(metrics):
         means = []
         stds = []
+
+        # Compute mean and std for each model
         for model in models:
             values = results[model][metric]
             means.append(np.mean(values))
@@ -69,10 +73,14 @@ def plot_model_comparison(results):
             
             
 def plot_predictions_vs_actual(y_test, X_test, model):
-    """Scatter plot of predictions vs actual values"""
+    """
+    Plot predicted values against true values for a given model.
+    """
     y_pred = model.predict(X_test)
     plt.figure(figsize=(10, 8))
     plt.scatter(y_test, y_pred, c="b", alpha=0.7)
+
+    # Ideal prediction line
     min_val = min(y_test.min(), y_pred.min())
     max_val = max(y_test.max(), y_pred.max())
     plt.plot([min_val, max_val],[min_val, max_val], linestyle="--", c="g", label="ideal line")
@@ -81,7 +89,9 @@ def plot_predictions_vs_actual(y_test, X_test, model):
 
 
 def plot_residuals(y_test, X_test, model):
-    """Plot residual analysis"""
+    """
+    Plot residual analysis
+    """
     y_pred = model.predict(X_test)
     residuals = y_pred - y_test
 
@@ -92,15 +102,26 @@ def plot_residuals(y_test, X_test, model):
 
 
 def plot_learning_curve(X_train, y_train, X_val, y_val, model, curve_type="auto"):
+    """
+    Plot learning curves based on data size or training iterations.
+
+    If curve_type is 'auto', the function selects the appropriate
+    curve based on model attributes.
+    """
+    # Automatically determine learning curve type
     if curve_type == 'auto':
         if hasattr(model, 'loss_curve_'):
             curve_type = 'iteration'
         else:
             curve_type = 'data'
+
+    # -----------------------------------------------
+    # Data-size learning curve
     if curve_type == 'data':
         percentages = np.arange(0.1, 1.1, 0.1)
         sizes = (len(X_train) * percentages).astype(int)
         train_rmse, val_rmse = [], []
+        # Shuffle training data
         idx = np.random.permutation(len(X_train))
         X_shuffled = X_train[idx]
         y_shuffled = y_train.iloc[idx]
@@ -120,7 +141,9 @@ def plot_learning_curve(X_train, y_train, X_val, y_val, model, curve_type="auto"
         ax.set_ylabel('RMSE')
         ax.legend()
         ax.grid(True, linestyle='--')
-    
+
+    # -----------------------------------------------
+    # Iteration-based learning curve
     elif curve_type == 'iteration':
         model.fit(X_train, y_train)
         fig, ax = plt.subplots(figsize=(10, 8))
@@ -131,7 +154,7 @@ def plot_learning_curve(X_train, y_train, X_val, y_val, model, curve_type="auto"
         ax.grid(True, linestyle='--')
 
 
-# evaluate models
+# # Repeated evaluation on fixed test set
 def repeated_test_evaluation(
     best_model,
     X_train,
@@ -142,8 +165,9 @@ def repeated_test_evaluation(
     random_seed_start=0
 ):
     """
-    Repeatedly train and evaluate a model using cloned instances,
-    while keeping the test set fixed.
+    Repeatedly train and evaluate a model with different random seeds.
+
+    The test set remains fixed to assess performance stability.
 
     Parameters
     ----------
@@ -168,27 +192,27 @@ def repeated_test_evaluation(
     for i in range(n_runs):
         seed = random_seed_start + i
 
-        # ---- Clone model to avoid parameter carry-over ----
+        # Clone model to avoid parameter carry-over
         model = clone(best_model)
 
-        # ---- Set random state if supported ----
+        # Set random state if supported
         if "random_state" in model.get_params():
             model.set_params(random_state=seed)
 
-        # ---- Measure training time (TRAIN SET) ----
+        # Measure training time (TRAIN SET)
         train_start = time.perf_counter()
         model.fit(X_train, y_train)
         train_time = time.perf_counter() - train_start
 
-        # ---- Measure inference time (TEST SET) ----
+        # Measure inference time (TEST SET)
         infer_start = time.perf_counter()
         y_pred = model.predict(X_test)
         infer_time = time.perf_counter() - infer_start
 
-        # ---- Performance metrics (TEST SET) ----
+        # Performance metrics (TEST SET)
         metrics = calculate_metrics(y_test, y_pred)
 
-        # ---- Store results ----
+        # Store results
         results["RMSE"].append(metrics['RMSE'])
         results["MAE"].append(metrics['MAE'])
         results["R2"].append(metrics['R2'])
@@ -197,16 +221,21 @@ def repeated_test_evaluation(
 
     return results
 
+
+# Main Workflow
 def main():
+    """
+    Load data, evaluate final models, and visualize performance.
+    """
     # data load
     data_train = load_steel_data("normalized_train_data.csv")
     data_test = load_steel_data("normalized_test_data.csv")
     data = pd.concat([data_train, data_test], axis=0).reset_index(drop=True)
-
+    # Data preprocessing
     X_train, X_val, X_test, y_train, y_val, y_test = process_data(data)
     X_train_final = np.vstack((X_train, X_val))
     y_train_final = np.hstack((y_train, y_val))
-
+    # Load trained final models
     rf_final = joblib.load("results/models/randomforest_final.joblib")
     svr_final = joblib.load("results/models/svr_final.joblib")
     mlp_final = joblib.load("results/models/mlp_final.joblib")
@@ -219,12 +248,14 @@ def main():
             "GPR": gpr_final,
         }
     
+    # Prediction and residual plots
     for name, model in final_models.items():
         plot_predictions_vs_actual(y_test, X_test, model)
         save_figure(f"{name.lower()}_predictions_vs_actual.png", "figures/model_performances")
         plot_residuals(y_test, X_test, model)
         save_figure(f"{name.lower()}_residuals.png", "figures/model_performances")
-    
+
+    # Repeated evaluation on test set 
     final_results = {
         name: repeated_test_evaluation(
             model,
@@ -235,6 +266,8 @@ def main():
         )
         for name, model in final_models.items()
     }
+    
+    # Model comparison plot
     plot_model_comparison(final_results)
     save_figure("Model Performance Comparison.png", "figures/model_performances")
     
