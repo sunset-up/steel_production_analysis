@@ -78,3 +78,523 @@ Validation Metrics:
 {'rmse': 0.0719, 'mae': 0.0544, 'r2': 0.3554}
 ========================================
 
+========================================
+Time: 2026-01-13 17:58:41
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'rmse': 0.0299, 'mae': 0.021, 'r2': 0.8983}
+
+Validation Metrics:
+{'rmse': 0.065, 'mae': 0.0482, 'r2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-13 18:00:22
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'rmse': 0.0572, 'mae': 0.0451, 'r2': 0.6279}
+
+Validation Metrics:
+{'rmse': 0.0727, 'mae': 0.0547, 'r2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-13 18:04:02
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'rmse': 0.0694, 'mae': 0.053, 'r2': 0.4514}
+
+Validation Metrics:
+{'rmse': 0.0705, 'mae': 0.0531, 'r2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-13 18:29:57
+Model: GaussianProcessRegressor
+Search Method: grid
+CV: 3
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'alpha': 0.01, 'kernel': RBF(length_scale=1) + WhiteKernel(noise_level=1), 'n_restarts_optimizer': 5, 'normalize_y': True}
+
+Best CV Score:
+-0.005683724838929884
+
+Train Metrics:
+{'rmse': 0.065, 'mae': 0.0499, 'r2': 0.5185}
+
+Validation Metrics:
+{'rmse': 0.0719, 'mae': 0.0544, 'r2': 0.3554}
+========================================
+
+========================================
+Time: 2026-01-13 23:03:02
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'rmse': 0.0299, 'mae': 0.021, 'r2': 0.8983}
+
+Validation Metrics:
+{'rmse': 0.065, 'mae': 0.0482, 'r2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-13 23:05:56
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'rmse': 0.0572, 'mae': 0.0451, 'r2': 0.6279}
+
+Validation Metrics:
+{'rmse': 0.0727, 'mae': 0.0547, 'r2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-13 23:10:59
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'rmse': 0.0694, 'mae': 0.053, 'r2': 0.4514}
+
+Validation Metrics:
+{'rmse': 0.0705, 'mae': 0.0531, 'r2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-14 00:45:00
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'rmse': 0.0299, 'mae': 0.021, 'r2': 0.8983}
+
+Validation Metrics:
+{'rmse': 0.065, 'mae': 0.0482, 'r2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-14 00:47:04
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'rmse': 0.0572, 'mae': 0.0451, 'r2': 0.6279}
+
+Validation Metrics:
+{'rmse': 0.0727, 'mae': 0.0547, 'r2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-14 00:51:19
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'rmse': 0.0694, 'mae': 0.053, 'r2': 0.4514}
+
+Validation Metrics:
+{'rmse': 0.0705, 'mae': 0.0531, 'r2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-14 01:07:48
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'rmse': 0.0299, 'mae': 0.021, 'r2': 0.8983}
+
+Validation Metrics:
+{'rmse': 0.065, 'mae': 0.0482, 'r2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-14 01:09:28
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'rmse': 0.0572, 'mae': 0.0451, 'r2': 0.6279}
+
+Validation Metrics:
+{'rmse': 0.0727, 'mae': 0.0547, 'r2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-14 01:10:53
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'rmse': 0.0694, 'mae': 0.053, 'r2': 0.4514}
+
+Validation Metrics:
+{'rmse': 0.0705, 'mae': 0.0531, 'r2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-14 01:31:43
+Model: GaussianProcessRegressor
+Search Method: grid
+CV: 3
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'alpha': 1e-08, 'kernel': RBF(length_scale=1) + WhiteKernel(noise_level=1), 'n_restarts_optimizer': 5, 'normalize_y': True}
+
+Best CV Score:
+-0.005683724841343925
+
+Train Metrics:
+{'rmse': 0.065, 'mae': 0.0499, 'r2': 0.5185}
+
+Validation Metrics:
+{'rmse': 0.0719, 'mae': 0.0544, 'r2': 0.3554}
+========================================
+
+========================================
+Time: 2026-01-14 01:40:27
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'rmse': 0.0299, 'mae': 0.021, 'r2': 0.8983}
+
+Validation Metrics:
+{'rmse': 0.065, 'mae': 0.0482, 'r2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-14 01:42:08
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'rmse': 0.0572, 'mae': 0.0451, 'r2': 0.6279}
+
+Validation Metrics:
+{'rmse': 0.0727, 'mae': 0.0547, 'r2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-14 01:43:08
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'rmse': 0.0694, 'mae': 0.053, 'r2': 0.4514}
+
+Validation Metrics:
+{'rmse': 0.0705, 'mae': 0.0531, 'r2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-14 02:02:11
+Model: GaussianProcessRegressor
+Search Method: grid
+CV: 3
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'alpha': 1e-08, 'kernel': RBF(length_scale=1) + WhiteKernel(noise_level=1), 'n_restarts_optimizer': 5, 'normalize_y': True}
+
+Best CV Score:
+-0.005683724846167234
+
+Train Metrics:
+{'rmse': 0.065, 'mae': 0.0499, 'r2': 0.5185}
+
+Validation Metrics:
+{'rmse': 0.0719, 'mae': 0.0544, 'r2': 0.3554}
+========================================
+
+========================================
+Time: 2026-01-14 02:06:47
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'rmse': 0.0299, 'mae': 0.021, 'r2': 0.8983}
+
+Validation Metrics:
+{'rmse': 0.065, 'mae': 0.0482, 'r2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-14 02:09:27
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'rmse': 0.0572, 'mae': 0.0451, 'r2': 0.6279}
+
+Validation Metrics:
+{'rmse': 0.0727, 'mae': 0.0547, 'r2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-14 02:10:45
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'rmse': 0.0694, 'mae': 0.053, 'r2': 0.4514}
+
+Validation Metrics:
+{'rmse': 0.0705, 'mae': 0.0531, 'r2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-14 02:30:28
+Model: GaussianProcessRegressor
+Search Method: grid
+CV: 3
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'alpha': 1e-08, 'kernel': RBF(length_scale=1) + WhiteKernel(noise_level=1), 'n_restarts_optimizer': 5, 'normalize_y': True}
+
+Best CV Score:
+-0.0056837248423319406
+
+Train Metrics:
+{'rmse': 0.065, 'mae': 0.0499, 'r2': 0.5185}
+
+Validation Metrics:
+{'rmse': 0.0719, 'mae': 0.0544, 'r2': 0.3554}
+========================================
+
+========================================
+Time: 2026-01-14 13:48:02
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'RMSE': 0.0299, 'MAE': 0.021, '$R^2$': 0.8983}
+
+Validation Metrics:
+{'RMSE': 0.065, 'MAE': 0.0482, '$R^2$': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-14 13:49:42
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'RMSE': 0.0572, 'MAE': 0.0451, '$R^2$': 0.6279}
+
+Validation Metrics:
+{'RMSE': 0.0727, 'MAE': 0.0547, '$R^2$': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-14 13:50:37
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'RMSE': 0.0694, 'MAE': 0.053, '$R^2$': 0.4514}
+
+Validation Metrics:
+{'RMSE': 0.0705, 'MAE': 0.0531, '$R^2$': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-14 14:11:39
+Model: GaussianProcessRegressor
+Search Method: grid
+CV: 3
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'alpha': 1e-08, 'kernel': RBF(length_scale=1) + WhiteKernel(noise_level=1), 'n_restarts_optimizer': 5, 'normalize_y': True}
+
+Best CV Score:
+-0.005683724832353708
+
+Train Metrics:
+{'RMSE': 0.065, 'MAE': 0.0499, '$R^2$': 0.5185}
+
+Validation Metrics:
+{'RMSE': 0.0719, 'MAE': 0.0544, '$R^2$': 0.3554}
+========================================
+

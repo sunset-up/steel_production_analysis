@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 
 # define removing duplicates function
@@ -188,6 +189,38 @@ def data_preprocessing_pipeline():
          ("standscaler", StandardScaler())
     ])
     return pipeline
+
+def split_set(data, test_size=0.15, val_size=0.15, seed=42):
+
+    temp_size = test_size + val_size
+    temp_split_size = val_size / (temp_size)
+    # split to training set and temporary set
+    train_set, temp_set = train_test_split(data, test_size=temp_size, random_state=seed)
+    # split to validation set and test set
+    val_set, test_set = train_test_split(temp_set, test_size=temp_split_size, random_state=seed)
+    # split features and label
+    X_train_split = train_set.drop(columns=['output'])
+    y_train = train_set["output"]
+    X_val_split = val_set.drop(columns=['output'])
+    y_val = val_set['output']
+    X_test_split = test_set.drop(columns=['output'])
+    y_test = test_set['output']
+
+    return X_train_split, X_val_split, X_test_split, y_train, y_val, y_test
+
+
+def process_data(data):
+    X_train_split, X_val_split, X_test_split, y_train, y_val, y_test=split_set(data)
+
+    pipeline = data_preprocessing_pipeline()
+    print("Training set:")
+    X_train = pipeline.fit_transform(X_train_split)
+    print("Validation set:")
+    X_val = pipeline.transform(pd.DataFrame(X_val_split))
+    print("Test set:")
+    X_test = pipeline.transform(pd.DataFrame(X_test_split))
+
+    return X_train, X_val, X_test, y_train, y_val, y_test
 
 
 if __name__ == '__main__':

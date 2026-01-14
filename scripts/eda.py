@@ -3,6 +3,8 @@ import seaborn as sns
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from data_loading import load_steel_data
+from data_preprocessing import split_set
 
 
 # plot the matrix correlation heatmap
@@ -151,7 +153,39 @@ def save_figure(
 
     print(f"{filename} saved to: {save_path}")
 
+# 3. Data analysis plots
+def main():
+    # Data load
+    data_train = load_steel_data("normalized_train_data.csv")
+    data_test = load_steel_data("normalized_test_data.csv")
+    data = pd.concat([data_train, data_test], axis=0).reset_index(drop=True)
+    # split data set
+    X_train_split, _, _, y_train, _, _ =split_set(data)
+    # plot
+    train_set = pd.concat([X_train_split, y_train], axis=1)
+    corr_matrix = train_set.corr()
+    # plot the matrix correlation heatmap
+    plot_correlation_matrix(corr_matrix)
+    save_figure("correlation_matrix.png")
+
+    # feature distributions
+    plot_feature_distributions(X_train_split)
+    save_figure("feature_distributions.png")
+
+    # target variable distribution
+    plot_target_distributions(y_train)
+    save_figure("target_distributions.png")
+
+    # box plots
+    plot_box(X_train_split)
+    save_figure("box_plots.png")
+
+    # pair plots
+    # Select the most correlated features with the output based on the correlation matrix heatmap
+    features = ["input1", "input2", "input3", "input4",  "output"]
+    plot_pair(train_set, features=features)
+    save_figure("pair_plot.png")
 
 if __name__ == '__main__':
-    pass
+    main()
 

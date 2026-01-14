@@ -1,4 +1,6 @@
 import time
+import json
+import joblib
 from pathlib import Path
 from datetime import datetime
 import numpy as np
@@ -22,9 +24,10 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.base import clone
-import eda
 from data_loading import load_steel_data
 from data_preprocessing import data_preprocessing_pipeline
+from data_preprocessing import split_set
+from eda import save_figure
 from results_analysis import calculate_metrics
 from results_analysis import plot_predictions_vs_actual
 from results_analysis import plot_learning_curve
@@ -139,71 +142,15 @@ def print_results(results):
      print(f"Validation Performance:{results['val_results']}")
 
 
-# evaluate models
-def repeated_test_evaluation(
-    base_model,
-    X_train,
-    y_train,
-    X_test,
-    y_test,
-    n_runs=5,
-    random_seed_start=0
-):
-    """
-    Repeatedly train and evaluate a model using cloned instances,
-    while keeping the test set fixed.
-
-    Parameters
-    ----------
-    base_model : sklearn estimator (already instantiated)
-        Base model with chosen hyperparameters.
-    n_runs : int
-        Number of repeated runs with different random seeds.
-
-    Returns
-    -------
-    dict: metric_name -> list of values
-    """
-
-    results = {
-        "RMSE": [],
-        "MAE": [],
-        "R2": [],
-        "Training Time": [],
-        "Inference Time": []
-    }
-
-    for i in range(n_runs):
-        seed = random_seed_start + i
-
-        # ---- Clone model to avoid parameter carry-over ----
-        model = clone(base_model)
-
-        # ---- Set random state if supported ----
-        if "random_state" in model.get_params():
-            model.set_params(random_state=seed)
-
-        # ---- Measure training time (TRAIN SET) ----
-        train_start = time.perf_counter()
-        model.fit(X_train, y_train)
-        train_time = time.perf_counter() - train_start
-
-        # ---- Measure inference time (TEST SET) ----
-        infer_start = time.perf_counter()
-        y_pred = model.predict(X_test)
-        infer_time = time.perf_counter() - infer_start
-
-        # ---- Performance metrics (TEST SET) ----
-        metrics = calculate_metrics(y_test, y_pred)
-
-        # ---- Store results ----
-        results["RMSE"].append(metrics['rmse'])
-        results["MAE"].append(metrics['mae'])
-        results["R2"].append(metrics['r2'])
-        results["Training Time"].append(train_time)
-        results["Inference Time"].append(infer_time)
-
-    return results
+# train the final model with (training set + validation set)
+def train_final_model(best_model, X_train, y_train, random_state=42):
+    final_model = clone(best_model)
+    if "random_state" in final_model.get_params():
+        final_model.set_params(random_state=random_state)
+    start_time = time.perf_counter()
+    final_model.fit(X_train, y_train)
+    training_time = float(f"{(time.perf_counter() - start_time):.4f}")
+    return final_model, training_time
 
 
 def main():
@@ -211,53 +158,14 @@ def main():
     # 1. Data load
     data_train = load_steel_data("normalized_train_data.csv")
     data_test = load_steel_data("normalized_test_data.csv")
-    # create a data copy
-    train_ori = data_train.copy()
-    test_ori = data_test.copy()
-    data = pd.concat([train_ori, test_ori], axis=0).reset_index(drop=True)
+    data = pd.concat([data_train, data_test], axis=0).reset_index(drop=True)
     #################################################################
     # 2. Data split
     # split  data into train / validation / test sets(0.7/0.15/0.15)
-    train_set, temp_set = train_test_split(data, test_size=0.3, random_state=42)
-    print(temp_set.shape)
-    val_set, test_set = train_test_split(temp_set, test_size=0.5, random_state=42)
-    X_train_split = train_set.drop(columns=['output'])
-    print(X_train_split.columns.tolist())
-    y_train = train_set["output"]
-    X_val_split = val_set.drop(columns=['output'])
-    y_val = val_set['output']
-    X_test_split = test_set.drop(columns=['output'])
-    y_test = test_set['output']
+    X_train_split, X_val_split, X_test_split, y_train, y_val, y_test=split_set(data)
     ##################################################################
-    # 3. Data analysis plots
-    corr_matrix = train_set.corr()
-    # plot the matrix correlation heatmap
-    eda.plot_correlation_matrix(corr_matrix)
-    eda.save_figure("correlation_matrix.png")
-
-    # feature distributions
-    eda.plot_feature_distributions(X_train_split[:,1:22])
-    eda.save_figure("feature_distributions.png")
-
-    # target variable distribution
-    eda.plot_target_distributions(y_train)
-    eda.save_figure("target_distributions.png")
-
-    # box plots
-    eda.plot_box(X_train_split)
-    eda.save_figure("box_plots.png")
-
-    # pair plots
-    # Select the most correlated features with the output based on the correlation matrix heatmap
-    features = ["input1", "input2", "input3", "input4",  "output"]
-    eda.plot_pair(X_train_split, features=features)
-    eda.save_figure("pair_plot.png")
-
-    #################################################################
-    # 4.data preprocessing
+    # 3.data preprocessing
     pipeline = data_preprocessing_pipeline()
-    # feature engineering
-
     print("Training set:")
     X_train = pipeline.fit_transform(pd.DataFrame(X_train_split))
     print("Validation set:")
@@ -265,13 +173,13 @@ def main():
     print("Test set:")
     X_test = pipeline.transform(pd.DataFrame(X_test_split))
     #################################################################
-    # 5. model training
+    # 4. model training
     rf_results = train_with_search(
         build_random_forest,
         param_space={
-            'n_estimators':[2000],
-            'max_features':[1.0],
-            'max_depth': [15],
+            'n_estimators':[100, 500, 1000],
+            'max_features':[1.0, 0.7, 0.5, 'sqrt'],
+            'max_depth': [15, 25, 35],
             'min_samples_leaf': [2],
             'min_samples_split': [2],
             'bootstrap': [True],     
@@ -285,14 +193,14 @@ def main():
         log_name='Training_log.txt'
     )
     print_results(rf_results)
-
+ 
     svr_results = train_with_search(
          build_svr,
          param_space={
-            'C':[1.0],
+            'C':[0.5, 1.0, 10, 100],
             'epsilon':[0.05, 0.1],
             'kernel':["rbf"],
-            'degree':[3],
+            'degree':[2, 3, 4],
             'gamma':['scale', 0.05, 0.1],   
          },
          X_train=X_train,
@@ -311,7 +219,7 @@ def main():
             'hidden_layer_sizes':[(420, 336, 252, 168, 84)],
             'activation':['relu'],
             'batch_size':['auto'],
-            'alpha':[0.01],
+            'alpha':[0.05],
             'solver':['adam'],     
          },
          X_train=X_train,
@@ -323,12 +231,12 @@ def main():
     )
     print_results(mlp_results)
 
-    kernel = RBF(length_scale_bounds=(1, 50)) + WhiteKernel(noise_level_bounds=(1e-2, 1))
+    kernel = RBF(length_scale_bounds=(1, 1000)) + WhiteKernel(noise_level_bounds=(1e-3, 1))
     gpr_results = train_with_search(
         build_gpr,
         param_space={
             'kernel':[kernel],
-            'alpha':[5e-2],
+            'alpha':[1e-8],
             'normalize_y':[True],
             'n_restarts_optimizer':[5],
         },
@@ -340,6 +248,48 @@ def main():
         log_name='Training_log.txt',
     )
     print_results(gpr_results)
+
+
+    models = {
+    "RandomForest": rf_results["best_model"],
+    "SVR": svr_results["best_model"],
+    "MLP": mlp_results["best_model"],
+    "GPR": gpr_results["best_model"],
+    }
+
+    # plot the learning curves
+   
+    for name, model in models.items():
+        plot_learning_curve(X_train, y_train, X_val, y_val, model)
+        save_figure(f"{name.lower()}_learning_curve.png", "figures/training_performances")
+
+    X_train_final = np.vstack((X_train, X_val))
+    y_train_final = np.hstack((y_train, y_val))
+
+    # refit the final model
+    final_models = {}
+    for name, model in models.items():
+        final_model, training_time = train_final_model(model, X_train_final, y_train_final)
+        final_models[name] = [final_model, training_time]
+        joblib.dump(final_model, f"results/models/{name.lower()}_final.joblib")
+
+    
+    performances_results = {}
+    for name, final_model in final_models.items():
+        start_time = time.perf_counter()
+        y_pred = final_model[0].predict(X_test)
+        inference_time = float(f"{(time.perf_counter() - start_time):.4f}")
+        performance = calculate_metrics(y_test, y_pred)
+        performance["Training Time"] = final_model[1]
+        performance["Inference Time"] = inference_time
+        performances_results[name] = performance
+
+    base_dir = Path(__file__).resolve().parent.parent
+    results_path = base_dir/"results"/"table"/"test_performances.csv"
+    results_path.parent.mkdir(parents=True, exist_ok=True)
+    evaluation_results = pd.DataFrame.from_dict(performances_results, orient="index")
+    evaluation_results.to_csv(results_path)
+
 
 
 
