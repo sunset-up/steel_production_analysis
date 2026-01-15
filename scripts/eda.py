@@ -92,7 +92,6 @@ def plot_box(X):
     X.boxplot(showfliers=True, rot=45, fontsize=14)
     plt.title("Box plot of features", fontsize=16)
     plt.ylabel("Value")
-    plt.xlabel("Features")
     plt.grid(True, axis="y", linestyle='--', alpha=0.7)
 
 
@@ -186,6 +185,6 @@ def main():
     plot_pair(train_set, features=features)
     save_figure("pair_plot.png")
 
+
 if __name__ == '__main__':
     main()
-

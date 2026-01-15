@@ -1,12 +1,9 @@
 import time
-import json
 import joblib
 from pathlib import Path
 from datetime import datetime
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
@@ -20,16 +17,12 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import RFE
 from sklearn.model_selection import KFold
-from sklearn.ensemble import HistGradientBoostingRegressor
-from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsRegressor
 from sklearn.base import clone
 from data_loading import load_steel_data
 from data_preprocessing import data_preprocessing_pipeline
 from data_preprocessing import split_set
 from eda import save_figure
 from results_analysis import calculate_metrics
-from results_analysis import plot_predictions_vs_actual
 from results_analysis import plot_learning_curve
 
 
@@ -218,7 +211,7 @@ def main():
             'n_estimators':[100, 500, 1000],
             'max_features':[1.0, 0.7, 0.5, 'sqrt'],
             'max_depth': [15, 25, 35],
-            'min_samples_leaf': [2],
+            'min_samples_leaf': [1, 2],
             'min_samples_split': [2],
             'bootstrap': [True],     
         },
@@ -321,7 +314,7 @@ def main():
         start_time = time.perf_counter()
         y_pred = final_model[0].predict(X_test)
         inference_time = float(f"{(time.perf_counter() - start_time):.4f}")
-        
+
         performance = calculate_metrics(y_test, y_pred)
         performance["Training Time"] = final_model[1]
         performance["Inference Time"] = inference_time
@@ -333,8 +326,6 @@ def main():
     results_path.parent.mkdir(parents=True, exist_ok=True)
     evaluation_results = pd.DataFrame.from_dict(performances_results, orient="index")
     evaluation_results.to_csv(results_path)
-
-
 
 
 # model_training

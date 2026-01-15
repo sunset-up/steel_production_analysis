@@ -85,6 +85,8 @@ def plot_predictions_vs_actual(y_test, X_test, model):
     max_val = max(y_test.max(), y_pred.max())
     plt.plot([min_val, max_val],[min_val, max_val], linestyle="--", c="g", label="ideal line")
     plt.title(f"{type(model).__name__} Predictions vs Actual")
+    plt.xlabel("Actual")
+    plt.ylabel("Predictions")
     plt.legend()
 
 
@@ -99,6 +101,8 @@ def plot_residuals(y_test, X_test, model):
     plt.scatter(y_test, residuals)
     plt.axhline(0, linestyle="--", color="r")
     plt.title(f"{type(model).__name__}——residual")
+    plt.xlabel("Actual")
+    plt.ylabel("Residual")
 
 
 def plot_learning_curve(X_train, y_train, X_val, y_val, model, curve_type="auto"):
@@ -274,7 +278,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    
-
-

@@ -598,3 +598,83 @@ Validation Metrics:
 {'RMSE': 0.0719, 'MAE': 0.0544, '$R^2$': 0.3554}
 ========================================
 
+========================================
+Time: 2026-01-15 00:39:15
+Model: RandomForestRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'bootstrap': True, 'max_depth': 35, 'max_features': 1.0, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 1000}
+
+Best CV Score:
+-0.004611531948668762
+
+Train Metrics:
+{'RMSE': 0.0299, 'MAE': 0.021, 'R2': 0.8983}
+
+Validation Metrics:
+{'RMSE': 0.065, 'MAE': 0.0482, 'R2': 0.4734}
+========================================
+
+========================================
+Time: 2026-01-15 00:40:54
+Model: SVR
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'C': 0.5, 'degree': 2, 'epsilon': 0.05, 'gamma': 'scale', 'kernel': 'rbf'}
+
+Best CV Score:
+-0.005677203028648363
+
+Train Metrics:
+{'RMSE': 0.0572, 'MAE': 0.0451, 'R2': 0.6279}
+
+Validation Metrics:
+{'RMSE': 0.0727, 'MAE': 0.0547, 'R2': 0.3422}
+========================================
+
+========================================
+Time: 2026-01-15 00:41:47
+Model: MLPRegressor
+Search Method: grid
+CV: 5
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'activation': 'relu', 'alpha': 0.05, 'batch_size': 'auto', 'hidden_layer_sizes': (420, 336, 252, 168, 84), 'learning_rate': 'adaptive', 'solver': 'adam'}
+
+Best CV Score:
+-0.00524265374279719
+
+Train Metrics:
+{'RMSE': 0.0694, 'MAE': 0.053, 'R2': 0.4514}
+
+Validation Metrics:
+{'RMSE': 0.0705, 'MAE': 0.0531, 'R2': 0.3819}
+========================================
+
+========================================
+Time: 2026-01-15 01:02:04
+Model: GaussianProcessRegressor
+Search Method: grid
+CV: 3
+Scoring: neg_mean_squared_error
+
+Best Params:
+{'alpha': 1e-08, 'kernel': RBF(length_scale=1) + WhiteKernel(noise_level=1), 'n_restarts_optimizer': 5, 'normalize_y': True}
+
+Best CV Score:
+-0.005683724839513363
+
+Train Metrics:
+{'RMSE': 0.065, 'MAE': 0.0499, 'R2': 0.5185}
+
+Validation Metrics:
+{'RMSE': 0.0719, 'MAE': 0.0544, 'R2': 0.3554}
+========================================
+
