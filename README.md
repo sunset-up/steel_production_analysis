@@ -98,11 +98,11 @@ The steel production dataset consists of 21 input features describing process va
 #### EDA
 
 - **Figure 1: Box plot of features**
-  ![box_plots](figures\eda\box_plots.png)
+  ![box_plots](figures/eda/box_plots.png)
   - **Observations**: Outliers are present across many features; the range and dispersion vary by feature. This supports the need for robust preprocessing and potentially robust scaling.
   
 - **Figure 2: Correlation Matrix**
-  ![correlation_matrix](figures\eda\correlation_matrix.png)
+  ![correlation_matrix](figures/eda/correlation_matrix.png)
   
   - **Observations**: Inter-feature correlations are mixed. Some pairs show moderate positive correlations, others are weakly related. The output (target) shows varying associations with inputs, indicating that several features may contribute to the target in a non-uniform manner.
   
