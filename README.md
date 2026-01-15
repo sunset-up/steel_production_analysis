@@ -107,17 +107,17 @@ The steel production dataset consists of 21 input features describing process va
   - **Observations**: Inter-feature correlations are mixed. Some pairs show moderate positive correlations, others are weakly related. The output (target) shows varying associations with inputs, indicating that several features may contribute to the target in a non-uniform manner.
   
 - **Figure 3: Feature distributions (histogram grid)**
-  ![feature_distributions](figures\eda\feature_distributions.png)
+  ![feature_distributions](figures/eda/feature_distributions.png)
   
   - **Observations**: Most features cluster within [0, 1], with distributions ranging from near-Gaussian to mildly skewed shapes. The variation across features suggests different underlying data-generating processes and warrants nonlinear modeling considerations for some features.
   
 - **Figure 4: Pair Plot**
-  ![pair_plot](figures\eda\pair_plot.png)
+  ![pair_plot](figures/eda/pair_plot.png)
   
   - **Observations**: Nonlinear relationships and interactions are evident between several input pairs. The relation between inputs and the target appears multi-factorial and not strictly linear.
   
 - **Figure 5: Target distributions**
-  ![target_distributions](figures\eda\target_distributions.png)
+  ![target_distributions](figures/eda/target_distributions.png)
   
   - **Observations**: The output distribution is unimodal and centered around the mid-range of the normalized scale, with a slight tail toward higher values. This supports a standard regression approach, though minor skewness/kurtosis could influence error distribution.
 
@@ -186,18 +186,18 @@ This section describes the data processing, model training, and evaluation strat
 #### Learning-curve analysis (four learning curves)
 
 - **Gaussian Process Regressor Data-Size Learning Curve**
-  ![gpr_learning_curve](figures\training_performances\gpr_learning_curve.png)
+  ![gpr_learning_curve](figures/training_performances/gpr_learning_curve.png)
   - Training RMSE decreases as the training fraction increases, showing the model benefits from more data.
   - Validation RMSE remains relatively high (roughly 0.072–0.078 across fractions), indicating limited generalization with this setup.
 - **Random Forest Regressor Data-Size Learning Curve**
-  ![randomforest_learning_curve](figures\training_performances\randomforest_learning_curve.png)
+  ![randomforest_learning_curve](figures/training_performances/randomforest_learning_curve.png)
   - Training RMSE improves with more data; validation RMSE gradually decreases from ~0.075 toward ~0.065 as data size grows.
   - The gap between training and validation narrows with more data, suggesting modest improvements in generalization.
 - **SVR Data-Size Learning Curve**
-  ![svr_learning_curve](figures\training_performances\svr_learning_curve.png)
+  ![svr_learning_curve](figures/training_performances/svr_learning_curve.png)
   - Training RMSE is low and improves with data; validation RMSE remains around ~0.073–0.076, similar to RF, indicating a persistent generalization gap.
 - **MLP Regressor Iteration Learning Curve**
-  ![mlp_learning_curve](figures\training_performances\mlp_learning_curve.png)
+  ![mlp_learning_curve](figures/training_performances/mlp_learning_curve.png)
   - Training loss decreases rapidly with iterations, showing fast convergence.
   - The figure indicates strong optimization on training data, but without a clear validation curve, generalization behavior remains uncertain.
 - **Overall interpretation:**
@@ -266,7 +266,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 1: RandomForestRegressor – Predictions vs Actual
 
-![randomforest_predictions_vs_actual](figures\model_performances\randomforest_predictions_vs_actual.png)
+![randomforest_predictions_vs_actual](figures/model_performances/randomforest_predictions_vs_actual.png)
 
 - Observation: The scatter shows substantial spread around the diagonal; many points lie far from the ideal line, especially at higher Actual values.
 - Interpretation: RF captures some nonlinear patterns but struggles to generalize across the full range, with noticeable under- or over-prediction in several regions.
@@ -274,7 +274,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 2: RandomForestRegressor – Residuals
 
-![randomforest_residuals](figures\model_performances\randomforest_residuals.png)
+![randomforest_residuals](figures/model_performances/randomforest_residuals.png)
 
 - Observation: Residuals are centered near zero but exhibit a mild pattern: increasing variability or bias at larger Actual values.
 - Interpretation: Evidence of heteroscedasticity or underfitting for high targets; residual spread grows with the target.
@@ -282,7 +282,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 3: SVR – Predictions vs Actual
 
-![svr_predictions_vs_actual](figures\model_performances\svr_predictions_vs_actual.png)
+![svr_predictions_vs_actual](figures/model_performances/svr_predictions_vs_actual.png)
 
 - Observation: Predictions align moderately with actuals in the middle range but show larger dispersion toward the tails.
 - Interpretation: SVR’s tail performance is weaker; central predictions are not exceptionally accurate either.
@@ -290,7 +290,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 4: SVR – Residuals
 
-![svr_residuals](figures\model_performances\svr_residuals.png)
+![svr_residuals](figures/model_performances/svr_residuals.png)
 
 - Observation: Residuals cluster around zero in the center but drift for higher Actual values, suggesting mild systematic bias.
 - Interpretation: Tail-related errors persist; kernel and parameter choices may not be sufficient to fix them.
@@ -298,7 +298,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 5: GaussianProcessRegressor – Predictions vs Actual
 
-![gpr_predictions_vs_actual](figures\model_performances\gpr_predictions_vs_actual.png)
+![gpr_predictions_vs_actual](figures/model_performances/gpr_predictions_vs_actual.png)
 
 - Observation: Central predictions follow the diagonal reasonably, but deviations appear at the high end of Actual.
 - Interpretation: GPR provides a decent fit for the bulk of the data but tail under- or over-prediction is evident.
@@ -306,7 +306,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 6: GaussianProcessRegressor – Residuals
 
-![gpr_residuals](figures\model_performances\gpr_residuals.png)
+![gpr_residuals](figures/model_performances/gpr_residuals.png)
 
 - Observation: Residuals are mostly near zero with a few outliers on the high-Actual side; some negative residuals increase as Actual grows.
 - Interpretation: Overall bias is low, but tail regions exhibit higher residual variance.
@@ -314,7 +314,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 7: MLPRegressor – Predictions vs Actual
 
-![mlp_predictions_vs_actual](figures\model_performances\mlp_predictions_vs_actual.png)
+![mlp_predictions_vs_actual](figures/model_performances/mlp_predictions_vs_actual.png)
 
 - Observation: Central region shows moderate alignment; higher Actual values display systematic deviation (predictions lagging).
 - Interpretation: MLP struggles to capture high-target patterns; potential underfitting or insufficient architecture.
@@ -322,7 +322,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 8: MLPRegressor – Residuals
 
-![mlp_residuals](figures\model_performances\mlp_residuals.png)
+![mlp_residuals](figures/model_performances/mlp_residuals.png)
 
 - Observation: Residuals are centered around zero with moderate spread; no strong global bias, but variability is non-negligible.
 - Interpretation: Overall stability is limited; tail regions contribute to prediction errors.
@@ -330,7 +330,7 @@ This section candidly assesses the model outcomes based on the provided visuals.
 
 ##### Figure 9: Model Performance Comparison with Error Bars
 
-![Model_Performance_Comparison](figures\model_performances\Model_Performance_Comparison.png)
+![Model_Performance_Comparison](figures/model_performances/Model_Performance_Comparison.png)
 
 - Observation:
   - RF shows the best metrics among the four (lowest RMSE and MAE, highest R²), but all values indicate weak explanatory power.
