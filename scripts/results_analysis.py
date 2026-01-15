@@ -273,7 +273,7 @@ def main():
     
     # Model comparison plot
     plot_model_comparison(final_results)
-    save_figure("Model Performance Comparison.png", "figures/model_performances")
+    save_figure("Model_Performance_Comparison.png", "figures/model_performances")
     
 
 if __name__ == '__main__':
