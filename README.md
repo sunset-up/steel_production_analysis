@@ -231,7 +231,7 @@ Subsequent sections will fill these fields after the final evaluation on the tes
 
 #### Tools Used
 
-- Language: Python 3.9
+- Language: Python 3.12
 - Data handling: pandas, numpy
 - Machine learning framework: scikit-learn
   - Core components: Pipeline, ColumnTransformer (if used), Transformers (for scaling and encoding)
@@ -345,7 +345,6 @@ This section candidly assesses the model outcomes based on the provided visuals.
 - RF remains the most stable and accurate among the tested models, but its tail performance is still deficient. This suggests RF captures some nonlinear structure but misses key patterns that drive high-target instances.
 - GPR and SVR offer comparable central performance, yet both show tail weaknesses; their benefits are limited by the dataset’s characteristics and kernel/hyperparameter choices.
 - MLPUnderfits: The neural network approach here does not surpass tree-based methods, likely due to insufficient data, suboptimal network architecture, or lack of effective regularization.
-
 ## Conclusion
 
 - Overall, all four regression models show limited predictive power on the current dataset; none achieves satisfactory explained variance (R² values all below 0.5, with RF around 0.46, SVR and GPR around 0.34, and MLP around 0.26). Tail errors and residual patterns indicate weak generalization, especially for high target values.
